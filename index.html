@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intra ICE Cricket Mania S2</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ice: #00d4ff;
+  --ice2: #0099cc;
+  --gold: #FFD700;
+  --gold2: #e6b800;
+  --green: #00ff88;
+  --dark: #040e1a;
+  --dark2: #071828;
+  --dark3: #0a2035;
+  --card: #081e30;
+  --border: rgba(0,212,255,0.25);
+  --red: #ff4757;
+  --amber: #ffa502;
+  --text: #e8f4ff;
+  --muted: rgba(232,244,255,0.55);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Oswald', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 30% at 80% 80%, rgba(0,153,204,0.06) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(0,212,255,0.015) 40px, rgba(0,212,255,0.015) 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,212,255,0.015) 40px, rgba(0,212,255,0.015) 41px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page { position: relative; z-index: 1; }
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: clamp(1.5rem, 4vw, 3rem) 1rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(0,212,255,0.05) 0%, transparent 100%);
+}
+
+.logo-ice {
+  font-size: clamp(2rem, 7vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(0,212,255,0.6), 0 0 60px rgba(0,212,255,0.3);
+}
+.logo-ice span.hl { color: var(--ice); }
+.logo-s2 {
+  font-size: clamp(1.4rem, 5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  letter-spacing: 2px;
+  margin-left: 8px;
+}
+.header-title-row { display:flex; align-items:center; justify-content:center; gap:6px; }
+.tournament-name {
+  font-size: clamp(1rem,4vw,1.8rem);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255,215,0,0.4);
+  margin-top: 4px;
+}
+.header-sub {
+  font-size: clamp(0.75rem, 2.5vw, 1rem);
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.venue-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.35);
+  border-radius: 100px;
+  padding: 6px 18px;
+  font-size: clamp(0.7rem, 2.5vw, 0.88rem);
+  color: var(--ice);
+  letter-spacing: 2px;
+  margin-top: 14px;
+  font-weight: 500;
+}
+
+/* ── NAV TABS ── */
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 1rem 1rem 0;
+  flex-wrap: wrap;
+}
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(0.75rem, 2.5vw, 0.92rem);
+  letter-spacing: 1px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: rgba(0,212,255,0.12);
+  border-color: var(--ice);
+  color: var(--ice);
+}
+
+/* ── SECTIONS ── */
+.section { display: none; padding: 1.5rem 1rem 3rem; max-width: 900px; margin: 0 auto; }
+.section.active { display: block; }
+
+/* ── SECTION TITLE ── */
+.sec-title {
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--ice);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.sec-title::before, .sec-title::after {
+  content: '';
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ice));
+}
+.sec-title::after { background: linear-gradient(90deg, var(--ice), transparent); }
+
+/* ── ANNOUNCE ── */
+.announce {
+  background: linear-gradient(135deg, rgba(255,165,2,0.15), rgba(255,71,87,0.1));
+  border: 1px solid rgba(255,165,2,0.4);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.announce-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.announce-text { font-size: clamp(0.8rem, 2.5vw, 0.92rem); line-height: 1.6; color: var(--text); font-family: 'Tiro Bangla', serif; font-weight: 400; }
+.announce-text strong { color: var(--gold); font-family: 'Oswald', sans-serif; font-size: 1.05em; }
+
+/* ── DAY HEADER ── */
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2rem 0 1rem;
+}
+.day-badge {
+  background: linear-gradient(135deg, var(--ice2), var(--ice));
+  color: var(--dark);
+  font-size: clamp(0.65rem, 2vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.day-date {
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.day-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+/* ── MATCH CARD ── */
+.match-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.match-card:hover { border-color: rgba(0,212,255,0.5); transform: translateY(-1px); }
+.match-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ice2), var(--ice), var(--ice2));
+}
+.match-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.match-num {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--ice);
+  font-weight: 600;
+  background: rgba(0,212,255,0.1);
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,212,255,0.2);
+}
+.match-time { font-size: clamp(0.8rem,2.5vw,0.9rem); color: var(--gold); font-weight: 600; letter-spacing: 1px; }
+.match-overs { font-size: 0.68rem; color: var(--muted); letter-spacing: 1px; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 4px; }
+.teams-row { display: flex; align-items: center; gap: 12px; }
+.team { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.team-logo {
+  width: clamp(44px, 12vw, 62px);
+  height: clamp(44px, 12vw, 62px);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  font-weight: 700;
+  border: 2px solid;
+  flex-shrink: 0;
+}
+.team-logo.bw { background: rgba(0,200,80,0.15); border-color: #00c850; color: #00ff88; }
+.team-logo.cs { background: rgba(0,180,255,0.15); border-color: var(--ice2); color: var(--ice); }
+.team-logo.cc { background: rgba(255,71,87,0.15); border-color: var(--red); color: #ff8a94; }
+.team-name { font-size: clamp(0.62rem,2vw,0.78rem); font-weight: 600; letter-spacing: 1px; color: var(--text); line-height: 1.2; text-align: center; }
+.vs-badge {
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+  color: var(--gold);
+  font-size: clamp(0.8rem,3vw,1rem);
+  font-weight: 700;
+  width: clamp(32px,8vw,42px);
+  height: clamp(32px,8vw,42px);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── TEAMS GRID ── */
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 0.5rem;
+}
+.team-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem;
+  display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.team-card:hover { border-color: rgba(0,212,255,0.5); transform: translateY(-2px); }
+.team-card-logo {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; font-weight: 700; border: 2px solid;
+}
+.team-card-logo.bw { background: rgba(0,200,80,0.15); border-color: #00c850; color: #00ff88; }
+.team-card-logo.cs { background: rgba(0,180,255,0.15); border-color: var(--ice2); color: var(--ice); }
+.team-card-logo.cc { background: rgba(255,71,87,0.15); border-color: var(--red); color: #ff8a94; }
+.team-card-name { font-size: 1.05rem; font-weight: 700; letter-spacing: 1.5px; color: #fff; }
+.team-card-tag { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; }
+.team-divider { width:100%; height:1px; margin:4px 0; }
+
+/* ── RULES ── */
+.rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.rules-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.rules-stat-num { font-size: 2rem; font-weight: 700; color: var(--ice); line-height: 1; }
+.rules-stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 1px; line-height: 1.4; }
+.rules-stat-label strong { display: block; font-size: 0.88rem; color: var(--text); margin-bottom: 2px; }
+
+.rule-sec { margin-bottom: 1.5rem; }
+.rule-sec-title {
+  font-size: clamp(0.8rem,2.5vw,0.95rem);
+  font-weight: 700;
+  color: var(--ice);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0,212,255,0.15);
+  display: flex; align-items: center; gap: 8px;
+}
+.rule-item {
+  background: rgba(8,30,48,0.7);
+  border-left: 3px solid var(--ice2);
+  border-radius: 0 8px 8px 0;
+  padding: 9px 14px;
+  margin-bottom: 6px;
+  font-size: clamp(0.78rem,2.3vw,0.88rem);
+  line-height: 1.65;
+  color: var(--text);
+  font-family: 'Tiro Bangla', serif;
+}
+.rule-item.warn { border-left-color: var(--amber); }
+.rule-item.danger { border-left-color: var(--red); }
+.rule-item strong { font-family: 'Oswald', sans-serif; color: var(--gold); font-size: 1.0em; font-weight: 500; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  border-top: 1px solid var(--border);
+  background: rgba(0,212,255,0.02);
+}
+.footer-tags { color: var(--muted); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 4px; }
+.footer-pow { font-size: 0.75rem; color: var(--ice); font-weight: 600; letter-spacing: 2px; }
+
+@media (max-width: 480px) {
+  .teams-row { gap: 8px; }
+  .team-name { font-size: 0.6rem; letter-spacing: 0.5px; }
+  .match-card { padding: 0.9rem 1rem; }
+  .nav-btn { padding: 8px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<header>
+  <div class="header-title-row">
+    <span class="logo-ice">INTRA <span class="hl">ICE</span></span>
+    <span class="logo-s2">S2</span>
+  </div>
+  <div class="tournament-name">CRICKET MANIA</div>
+  <div class="header-sub">Season 2 · 2026 · Round Robin</div>
+  <div class="venue-pill">📍 VENUE: BASKETBALL GROUND</div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showTab('rules', this)">📋 Rules</button>
+  <button class="nav-btn" onclick="showTab('teams', this)">🛡️ Teams</button>
+  <button class="nav-btn" onclick="showTab('schedule', this)">📅 Schedule</button>
+</nav>
+
+<!-- ═══════════════════════════ RULES ═══════════════════════════ -->
+<section class="section active" id="tab-rules">
+
+  <p class="sec-title">PLAYING RULES</p>
+
+  <div class="rules-grid">
+    <div class="rules-stat">
+      <div class="rules-stat-num">8</div>
+      <div class="rules-stat-label"><strong>Overs per Innings</strong>৪৮ বৈধ ডেলিভারি</div>
+    </div>
+    <div class="rules-stat">
+      <div class="rules-stat-num">11</div>
+      <div class="rules-stat-label"><strong>Players per Side</strong>১ জন Captain</div>
+    </div>
+    <div class="rules-stat">
+      <div class="rules-stat-num">2</div>
+      <div class="rules-stat-label"><strong>Max Overs/Bowler</strong>মোট ওভারের ২৫%</div>
+    </div>
+    <div class="rules-stat">
+      <div class="rules-stat-num">5</div>
+      <div class="rules-stat-label"><strong>Min Overs (Result)</strong>D/L Method প্রযোজ্য</div>
+    </div>
+  </div>
+
+  <div class="rule-sec">
+    <div class="rule-sec-title">🏏 Batting</div>
+    <div class="rule-item"><strong>No Ball → Free Hit:</strong> No Ball হলে পরের বল Free Hit। শুধু Run Out ছাড়া অন্য কোনোভাবে আউট হওয়া যাবে না।</div>
+    <div class="rule-item"><strong>Wide:</strong> Wide হলে Extra ১ রান এবং পুনরায় ডেলিভারি।</div>
+    <div class="rule-item"><strong>Bouncer:</strong> প্রতি ওভারে সর্বোচ্চ ১টি Bouncer। ২য় Bouncer = No Ball।</div>
+  </div>
+
+  <div class="rule-sec">
+    <div class="rule-sec-title">⚡ Powerplay &amp; Fielding</div>
+    <div class="rule-item"><strong>Overs 1–2 (Powerplay):</strong> ৩০-yard circle-এর বাইরে সর্বোচ্চ ২ জন ফিল্ডার।</div>
+    <div class="rule-item"><strong>Overs 3–6:</strong> বাইরে সর্বোচ্চ ৪ জন।</div>
+    <div class="rule-item"><strong>Overs 7–8 (Death):</strong> বাইরে সর্বোচ্চ ৫ জন।</div>
+    <div class="rule-item warn"><strong>Leg-side limit:</strong> যেকোনো সময় leg-side-এ উইকেটকিপার ছাড়া সর্বোচ্চ ৫ জন।</div>
+  </div>
+
+  <div class="rule-sec">
+    <div class="rule-sec-title">🏆 Match Result</div>
+    <div class="rule-item"><strong>Group Stage টাই:</strong> উভয় দল ১ পয়েন্ট করে — Super Over নেই।</div>
+    <div class="rule-item"><strong>Final টাই:</strong> Super Over। প্রতি দল ১ ওভার, সর্বোচ্চ ২ উইকেট।</div>
+    <div class="rule-item warn"><strong>বৃষ্টি / Abandonment:</strong> কমপক্ষে ৫ ওভার না হলে No Result — উভয়ই ১ পয়েন্ট। D/L Method প্রযোজ্য।</div>
+    <div class="rule-item"><strong>জয়:</strong> ২ পয়েন্ট &nbsp;|&nbsp; <strong>টাই / No Result:</strong> ১ পয়েন্ট করে &nbsp;|&nbsp; <strong>পরাজয়:</strong> ০ পয়েন্ট</div>
+    <div class="rule-item warn"><strong>NRR Tiebreaker:</strong> পয়েন্ট সমান হলে NRR-এ এগিয়ে থাকা দল Final খেলবে। NRR-ও সমান হলে Head-to-Head বিবেচনা করা হবে।</div>
+  </div>
+
+  <div class="rule-sec">
+    <div class="rule-sec-title">🚨 Code of Conduct</div>
+    <div class="rule-item"><strong>Level 1 — সতর্কতা:</strong> Umpire-এর সিদ্ধান্তে অসন্তোষ, অশোভন আচরণ।</div>
+    <div class="rule-item warn"><strong>Level 2 — ৫ Penalty Run:</strong> পিচ/বল নষ্ট করার চেষ্টা, বারবার নিয়ম ভঙ্গ।</div>
+    <div class="rule-item danger"><strong>Level 3 — বহিষ্কার:</strong> মারামারি, শারীরিক হুমকি। পরের ম্যাচেও নিষেধাজ্ঞা।</div>
+    <div class="rule-item danger"><strong>Ball Tampering:</strong> শূন্য সহিষ্ণুতা। তাৎক্ষণিক ৫ Penalty Run + Committee শাস্তি।</div>
+    <div class="rule-item"><strong>Committee-র সিদ্ধান্তই চূড়ান্ত</strong> — যেকোনো বিতর্কিত পরিস্থিতিতে।</div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════ TEAMS ═══════════════════════════ -->
+<section class="section" id="tab-teams">
+
+  <p class="sec-title">PARTICIPATING TEAMS</p>
+
+  <div class="teams-grid">
+    <div class="team-card">
+      <div class="team-card-logo bw">BW</div>
+      <div class="team-card-name">BYTE WARRIOR</div>
+      <div class="team-card-tag">TEAM 1 · ICE S2</div>
+      <div class="team-divider" style="background:rgba(0,200,80,0.2);"></div>
+      <div style="font-size:0.72rem;color:var(--muted);letter-spacing:1px;line-height:1.8;text-align:center;">
+        Matches: <span style="color:#fff;">6</span> &nbsp;|&nbsp;
+        Wins: <span style="color:var(--green);">—</span> &nbsp;|&nbsp;
+        Pts: <span style="color:var(--gold);">—</span>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-card-logo cs">CS</div>
+      <div class="team-card-name">CYBER STRIKERS</div>
+      <div class="team-card-tag">TEAM 2 · ICE S2</div>
+      <div class="team-divider" style="background:rgba(0,180,255,0.2);"></div>
+      <div style="font-size:0.72rem;color:var(--muted);letter-spacing:1px;line-height:1.8;text-align:center;">
+        Matches: <span style="color:#fff;">6</span> &nbsp;|&nbsp;
+        Wins: <span style="color:var(--green);">—</span> &nbsp;|&nbsp;
+        Pts: <span style="color:var(--gold);">—</span>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-card-logo cc">CC</div>
+      <div class="team-card-name">CODE CRUSHERS</div>
+      <div class="team-card-tag">TEAM 3 · ICE S2</div>
+      <div class="team-divider" style="background:rgba(255,71,87,0.2);"></div>
+      <div style="font-size:0.72rem;color:var(--muted);letter-spacing:1px;line-height:1.8;text-align:center;">
+        Matches: <span style="color:#fff;">6</span> &nbsp;|&nbsp;
+        Wins: <span style="color:var(--green);">—</span> &nbsp;|&nbsp;
+        Pts: <span style="color:var(--gold);">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="announce" style="margin-top:1.5rem;">
+    <span class="announce-icon">ℹ️</span>
+    <div class="announce-text" style="font-size:0.83rem;">
+      প্রতিটি দল Round Robin পদ্ধতিতে মোট <strong>৪টি</strong> ম্যাচ খেলবে। Group Stage শেষে শীর্ষ <strong>২টি</strong> দল Final-এ যাবে।
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════ SCHEDULE ═══════════════════════════ -->
+<section class="section" id="tab-schedule">
+
+  <p class="sec-title">MATCH SCHEDULE</p>
+
+  <div class="announce">
+    <span class="announce-icon">📢</span>
+    <div class="announce-text">
+      আগামী <strong>রবিবার, ২৬ এপ্রিল</strong> থেকে শুরু হচ্ছে Group Stage। প্রতিদিন <strong>২টি</strong> করে ম্যাচ — দুপুর <strong>৩:০০ PM</strong> থেকে। মঙ্গলবার কোনো ম্যাচ নেই (ICE Football Day)। <strong>Final Match</strong>-এর তারিখ পরে জানানো হবে।
+    </div>
+  </div>
+
+  <!-- DAY 1 -->
+  <div class="day-header">
+    <div class="day-badge">রবিবার</div>
+    <div class="day-date">26 April 2026</div>
+    <div class="day-line"></div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-meta">
+      <span class="match-num">MATCH 1</span>
+      <span class="match-time">⏰ 3:00 PM</span>
+      <span class="match-overs">8 OVERS</span>
+    </div>
+    <div class="teams-row">
+      <div class="team">
+        <div class="team-logo bw">BW</div>
+        <div class="team-name">BYTE<br>WARRIOR</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team">
+        <div class="team-logo cs">CS</div>
+        <div class="team-name">CYBER<br>STRIKERS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-meta">
+      <span class="match-num">MATCH 2</span>
+      <span class="match-time">⏰ 3:35 PM</span>
+      <span class="match-overs">8 OVERS</span>
+    </div>
+    <div class="teams-row">
+      <div class="team">
+        <div class="team-logo cs">CS</div>
+        <div class="team-name">CYBER<br>STRIKERS</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team">
+        <div class="team-logo cc">CC</div>
+        <div class="team-name">CODE<br>CRUSHERS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day-header">
+    <div class="day-badge">সোমবার</div>
+    <div class="day-date">27 April 2026</div>
+    <div class="day-line"></div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-meta">
+      <span class="match-num">MATCH 3</span>
+      <span class="match-time">⏰ 3:00 PM</span>
+      <span class="match-overs">8 OVERS</span>
+    </div>
+    <div class="teams-row">
+      <div class="team">
+        <div class="team-logo cc">CC</div>
+        <div class="team-name">CODE<br>CRUSHERS</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team">
+        <div class="team-logo bw">BW</div>
+        <div class="team-name">BYTE<br>WARRIOR</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-meta">
+      <span class="match-num">MATCH 4</span>
+      <span class="match-time">⏰ 3:35 PM</span>
+      <span class="match-overs">8 OVERS</span>
+    </div>
+    <div class="teams-row">
+      <div class="team">
+        <div class="team-logo bw">BW</div>
+        <div class="team-name">BYTE<br>WARRIOR</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team">
+        <div class="team-logo cs">CS</div>
+        <div class="team-name">CYBER<br>STRIKERS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY OFF -->
+  <div class="day-header">
+    <div class="day-badge" style="background:rgba(255,71,87,0.2);border:1px solid rgba(255,71,87,0.4);color:var(--red);font-size:0.65rem;letter-spacing:1.5px;padding:5px 12px;border-radius:4px;">মঙ্গলবার · NO MATCH</div>
+    <div class="day-date" style="color:var(--muted);">28 April — ICE Football Day</div>
+    <div class="day-line"></div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day-header">
+    <div class="day-badge">বুধবার</div>
+    <div class="day-date">29 April 2026</div>
+    <div class="day-line"></div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-meta">
+      <span class="match-num">MATCH 5</span>
+      <span class="match-time">⏰ 3:00 PM</span>
+      <span class="match-overs">8 OVERS</span>
+    </div>
+    <div class="teams-row">
+      <div class="team">
+        <div class="team-logo cs">CS</div>
+        <div class="team-name">CYBER<br>STRIKERS</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team">
+        <div class="team-logo cc">CC</div>
+        <div class="team-name">CODE<br>CRUSHERS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-meta">
+      <span class="match-num">MATCH 6</span>
+      <span class="match-time">⏰ 3:35 PM</span>
+      <span class="match-overs">8 OVERS</span>
+    </div>
+    <div class="teams-row">
+      <div class="team">
+        <div class="team-logo cc">CC</div>
+        <div class="team-name">CODE<br>CRUSHERS</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team">
+        <div class="team-logo bw">BW</div>
+        <div class="team-name">BYTE<br>WARRIOR</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="day-header" style="margin-top:2rem;">
+    <div class="day-badge" style="background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--dark);letter-spacing:2px;">🏆 FINAL</div>
+    <div class="day-date" style="color:var(--gold);">Date TBA — Committee Will Announce</div>
+    <div class="day-line" style="background:linear-gradient(90deg,rgba(255,215,0,0.3),transparent);"></div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-tags">#CRICKET &nbsp; #TOURNAMENT &nbsp; #ROUNDROBIN &nbsp; #ICE</div>
+  <div class="footer-pow">POWERED BY ICE ❄️</div>
+</footer>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
